@@ -1,0 +1,177 @@
+@font-face {
+    font-family: Acumin;
+    font-weight: bold;
+    src: url("Acumin-BdPro.otf") format("opentype");
+}
+
+#app-container {
+    width: 100%;
+    max-width: none;
+}
+
+#estimate-btn-outer {
+    text-align: center;
+}
+
+
+body {
+    background-color: #f9f9f9;
+    color: #333333;
+    font-size: 15px;
+    margin: 0px;
+}
+
+hr {
+    margin: 0.3rem 0rem;
+}
+
+.banner {
+    height: 5.5rem;
+    padding: 0rem 2rem 0rem;
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.banner Img {
+    position: relative;
+    height: 3rem;
+    width: auto;
+    margin-left: 2%;
+}
+
+H5 {
+    color: #2c8cff;
+    font-weight: 300;
+}
+
+H5, H3 {
+    font-family: Acumin, "Helvetica Neue", sans-serif;
+}
+
+#left-column {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 1rem 2rem;
+    padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+}
+
+#middle-column {
+    padding: 0rem 0rem 0rem 0rem;
+}
+
+#right-column {
+    padding: 0rem 0rem 0rem 0rem;
+}
+
+#bottom-column {
+    padding: 0rem 3rem 0rem 0rem;
+    margin-bottom:  20px;
+}
+
+#intro {
+    margin: 20px 0px;
+    font-family: "Helvetica Neue", sans-serif;
+    text-align: justify;
+}
+
+.desc {
+    font-family: "Helvetica Neue", sans-serif;
+    text-align: justify;
+}
+
+.component {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.component-logo {
+    width: 10%;
+    display: inline-block;
+    float: left;
+    font-family: "Helvetica Neue", sans-serif;
+    text-align: center;
+}
+
+.component-scale {
+    width: 45%;
+    display: inline-block;
+}
+
+.component-ts {
+    width: 45%;
+    display: inline-block;
+    float: right;
+}
+
+#control-card > p {
+    font-weight: bold;
+}
+
+#resource_estimation_card {
+    height: 100%;
+}
+
+#api_traffic_query_card, #resource_estimation_card, #api_traffic_learning_card {
+    background-color: #FFFFFF;
+    padding: 0.5rem 2rem 0.5rem 2rem;
+    margin: auto;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+
+#api_traffic_query_card > b, #resource_estimation_card > b, #api_traffic_learning_card > b {
+    line-height: 2.5;
+}
+
+@media only screen and (max-width: 750px), screen and (min-width: 768px) and (max-width: 1024px) {
+
+    body {
+        font-size: 13px;
+        margin: 0px;
+    }
+
+    .banner {
+        height: 6rem;
+    }
+
+    h5 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 2.5rem;
+    }
+
+    #intro {
+        margin: 10px 0px;
+    }
+
+    #left-column, #middle-column, #right-column, #bottom-column {
+        width: 100%;
+        margin-left: 0px;
+    }
+
+    #right-column {
+        padding: 0rem 0.5rem;
+    }
+
+    #bottom-column {
+        padding: 0rem 0.5rem;
+    }
+
+    #api_traffic_query_card > b, #resource_estimation_card > b, #api_traffic_learning_card > b {
+        line-height: 2.5;
+        font-size: 13px;
+        display: block;
+        text-align: center;
+    }
+
+}
