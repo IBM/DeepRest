@@ -82,7 +82,7 @@ app.layout = html.Div(
                 html.Div(
                     id="api_traffic_query_card",
                     children=[
-                        html.B("Hypothetical API Traffic - Query (From Your Config Input)"),
+                        html.B("API Traffic - Query (From Your Config Input)"),
                         html.Hr(),
                         dcc.Graph(id='linechart-query-traffic')
                     ],
@@ -150,11 +150,11 @@ def click_estimate(est_click, selected_load_shape, selected_multiplier, selected
         fig_bar = go.Figure(data=[
             go.Bar(name='BL: Resrc-aware ANN', x=[metric_names_show[m] for m in metric_names],
                    y=[metadata['scale'][k][1] for k in metric_names], marker_color="orange"),
-            go.Bar(name='BL: Regr w/o Traces', x=[metric_names_show[m] for m in metric_names],
+            go.Bar(name='BL: Simple Scaling', x=[metric_names_show[m] for m in metric_names],
                    y=[metadata['scale'][k][2] for k in metric_names], marker_color="green"),
-            go.Bar(name='BL: Regr w/ Traces', x=[metric_names_show[m] for m in metric_names],
+            go.Bar(name='BL: API-aware Scaling', x=[metric_names_show[m] for m in metric_names],
                    y=[metadata['scale'][k][3] for k in metric_names], marker_color="blue"),
-            go.Bar(name='Ours: QRNN', x=[metric_names_show[m] for m in metric_names],
+            go.Bar(name='Ours: API-aware QRNN', x=[metric_names_show[m] for m in metric_names],
                    y=[metadata['scale'][k][4] for k in metric_names], marker_color="black"),
         ])
         fig_bar['layout'].update(margin=dict(l=30, r=10, b=30, t=30))

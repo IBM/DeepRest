@@ -84,11 +84,11 @@ def generate_timeseries_figure(xs, xs_val, xs_labels, metadata, selected_metric)
     y3 = metadata['utilization'][selected_metric][3] if selected_metric in metadata['utilization'] else y_empty
     y4 = metadata['utilization'][selected_metric][4] if selected_metric in metadata['utilization'] else y_empty
     fig = go.Figure(data=[
-        go.Scatter(name='Ground Truth', x=xs, y=y0, line=dict(color="magenta", width=2, dash="dot")),
+        go.Scatter(name='Actual Usage', x=xs, y=y0, line=dict(color="magenta", width=2, dash="dot")),
         go.Scatter(name='BL: Resrc-aware ANN', x=xs[-60:], y=y1, line=dict(color="orange")),
-        go.Scatter(name='BL: Regr w/o Traces', x=xs[-60:], y=y2, line=dict(color="green")),
-        go.Scatter(name='BL: Regr w/ Traces', x=xs[-60:], y=y3, line=dict(color="blue")),
-        go.Scatter(name='Ours: QRNN', x=xs[-60:], y=y4, line=dict(color="black")),
+        go.Scatter(name='BL: Simple Scaling', x=xs[-60:], y=y2, line=dict(color="green")),
+        go.Scatter(name='BL: API-aware Scaling', x=xs[-60:], y=y3, line=dict(color="blue")),
+        go.Scatter(name='Ours: API-aware QRNN', x=xs[-60:], y=y4, line=dict(color="black")),
     ])
     fig.add_shape(
         type="rect",
