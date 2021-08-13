@@ -1,0 +1,108 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-thrift
+  labels:
+    death-star-project: social-network
+    app-name: nginx-thrift
+  namespace: social-network
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    name: http
+    targetPort: 8080
+    nodePort: 31000
+  selector:
+    death-star-project: social-network
+    app-name: nginx-thrift
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
+  name: nginx-thrift
+  labels:
+    death-star-project: social-network
+    app-name: nginx-thrift
+  namespace: social-network
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      death-star-project: social-network
+      app-name: nginx-thrift
+  template:
+    metadata:
+      annotations:
+        io.cilium.proxy-visibility: "<Egress/9090/TCP/HTTP>,<Egress/6379/TCP/REDIS>,<Egress/11211/TCP/MEMCACHED>,<Egress/27107/TCP/MONGODB>,<Egress/5672/TCP/RABBITMQ>,<Ingress/9090/TCP/HTTP>,<Ingress/6379/TCP/REDIS>,<Ingress/11211/TCP/MEMCACHED>,<Ingress/27017/TCP/MONGODB>,<Ingress/5672/TCP/RABBITMQ>"
+
+      labels: 
+        death-star-project: social-network
+        app-name: nginx-thrift
+        OUTPUT1: social-graph-service
+        OUTPUT2: text-service
+        OUTPUT3: media-service
+        OUTPUT4: home-timeline-service
+        OUTPUT5: user-service
+        OUTPUT6: unique-id-service
+        OUTPUT7: user-timeline-service
+      name: nginx-thrift
+    spec:
+      containers:
+      - name: nginx-thrift
+        image: yg397/openresty-thrift:xenial
+        ports: 
+        - containerPort: 8080
+        volumeMounts:
+        - name: tmp1
+          mountPath: /usr/local/openresty/nginx/scgi_temp
+        - name: tmp2
+          mountPath: /usr/local/openresty/nginx/uwsgi_temp
+        - name: tmp3
+          mountPath: /usr/local/openresty/nginx/fastcgi_temp
+        - name: tmp4
+          mountPath: /usr/local/openresty/nginx/proxy_temp
+        - name: tmp5
+          mountPath: /usr/local/openresty/nginx/client_body_temp
+
+        - mountPath: /usr/local/openresty/nginx/lua-scripts
+          name: nginx-config-pvc
+          subPath: nginx-web-server/lua-scripts-k8s
+        - mountPath: /usr/local/openresty/nginx/pages
+          name: nginx-config-pvc
+          subPath: nginx-web-server/pages
+        - mountPath: /usr/local/openresty/nginx/conf/nginx.conf
+          name: nginx-config-pvc
+          subPath: nginx-web-server/conf/nginx-k8s.conf
+        - mountPath: /usr/local/openresty/nginx/jaeger-config.json
+          name: nginx-config-pvc
+          subPath: nginx-web-server/jaeger-config.json
+        - mountPath: /gen-lua
+          name: nginx-config-pvc
+          subPath: gen-lua
+
+      restartPolicy: Always
+      volumes:
+      - name: tmp1
+        emptyDir: {}
+      - name: tmp2
+        emptyDir: {}
+      - name: tmp3
+        emptyDir: {}
+      - name: tmp4
+        emptyDir: {}
+      - name: tmp5
+        emptyDir: {}
+      - name: nginx-config-pvc
+        persistentVolumeClaim:
+          claimName: nginx-config-pvc
+      # - name: deathstar-sn-nws-nfs-pvc
+      #   persistentVolumeClaim:
+      #     claimName: deathstar-sn-nws-nfs-pvc
+      # - name: deathstar-sn-gl-nfs-pvc
+      #   persistentVolumeClaim:
+      #     claimName: deathstar-sn-gl-nfs-pvc
+        

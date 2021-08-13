@@ -1,0 +1,93 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: media-frontend
+  labels:
+    death-star-project: social-network
+    app-name: media-frontend
+  namespace: social-network
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    name: tcp
+    targetPort: 8080
+    nodePort: 31001
+  selector:
+    death-star-project: social-network
+    app-name: media-frontend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
+  name: media-frontend
+  labels:
+    death-star-project: social-network
+    app-name: media-frontend
+  namespace: social-network
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      death-star-project: social-network
+      app-name: media-frontend
+  template:
+    metadata:
+      annotations:
+        io.cilium.proxy-visibility: "<Egress/9090/TCP/HTTP>,<Egress/6379/TCP/REDIS>,<Egress/11211/TCP/MEMCACHED>,<Egress/27107/TCP/MONGODB>,<Egress/5672/TCP/RABBITMQ>,<Ingress/9090/TCP/HTTP>,<Ingress/6379/TCP/REDIS>,<Ingress/11211/TCP/MEMCACHED>,<Ingress/27017/TCP/MONGODB>,<Ingress/5672/TCP/RABBITMQ>"
+
+      labels: 
+        death-star-project: social-network
+        app-name: media-frontend
+      name: media-frontend
+    spec:
+      containers:
+      - name: media-frontend
+        image: khchow/media-frontend:unprivileged
+        ports: 
+        - containerPort: 8080
+        volumeMounts:
+        - name: tmp1
+          mountPath: /usr/local/openresty/nginx/scgi_temp
+        - name: tmp2
+          mountPath: /usr/local/openresty/nginx/uwsgi_temp
+        - name: tmp3
+          mountPath: /usr/local/openresty/nginx/fastcgi_temp
+        - name: tmp4
+          mountPath: /usr/local/openresty/nginx/proxy_temp
+        - name: tmp5
+          mountPath: /usr/local/openresty/nginx/client_body_temp
+
+        - mountPath: /usr/local/openresty/nginx/lua-scripts
+          name: media-config-pvc
+          subPath: media-frontend/lua-scripts-k8s
+        - mountPath: /usr/local/openresty/nginx/conf/nginx.conf
+          name: media-config-pvc
+          subPath: media-frontend/conf/nginx-k8s.conf
+        - mountPath: /usr/local/openresty/nginx/jaeger-config.json
+          name: media-config-pvc
+          subPath: media-frontend/jaeger-config.json
+
+      restartPolicy: Always
+      imagePullPolicy: Always
+      volumes:
+      - name: tmp1
+        emptyDir: {}
+      - name: tmp2
+        emptyDir: {}
+      - name: tmp3
+        emptyDir: {}
+      - name: tmp4
+        emptyDir: {}
+      - name: tmp5
+        emptyDir: {}
+      - name: media-config-pvc
+        persistentVolumeClaim:
+          claimName: media-config-pvc
+      # volumes:
+      # - name: deathstar-sn-mf-nfs-pvc
+      #   persistentVolumeClaim:
+      #     claimName: deathstar-sn-mf-nfs-pvc

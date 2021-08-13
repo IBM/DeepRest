@@ -1,0 +1,7 @@
+disabled: false
+reporter:
+  logSpans: false
+  localAgentHostPort: "127.0.0.1:6831"
+sampler:
+  type: const
+  param: 1

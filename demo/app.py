@@ -99,7 +99,7 @@ app.layout = html.Div(
                         html.Hr(),
                         html.Div(className='component', children=[
                             html.Div(className='component-logo'),
-                            html.Div(className='component-scale'),
+                            html.Div(id="scale-desc", className='component-scale', style={'text-align': 'center', 'display': 'none'}, children=[html.B("Scaling Factor: "), " >1 = Scale up | <1 = Scale down"]),
                             html.Div(id="metric-selector", className='component-ts', style={'text-align': 'left', 'display': 'none'}, children=[
                                 html.Div(style={'display': 'inline-block', 'float': 'left', 'font-weight': 'bold'},
                                          children='Visualize: '),
@@ -123,7 +123,7 @@ app.layout = html.Div(
 
 
 @app.callback(
-    [Output("div-resrc-estimation", "children"), Output("metric-selector", "style"), Output("loading-output-0", "children")],
+    [Output("div-resrc-estimation", "children"), Output("metric-selector", "style"), Output("scale-desc", "style"), Output("loading-output-0", "children")],
     [Input("estimate-btn", "n_clicks")],
     [State("dropdown-load-shape", "value"),
      State("dropdown-multiplier", "value"),
@@ -132,7 +132,7 @@ app.layout = html.Div(
 )
 def click_estimate(est_click, selected_load_shape, selected_multiplier, selected_composition, selected_metric):
     if selected_load_shape is None or selected_multiplier is None or selected_composition is None:
-        return [], {'text-align': 'left', 'display': 'none'}, []
+        return [], {'text-align': 'left', 'display': 'none'}, {'text-align': 'center', 'display': 'none'}, []
     component2metrics = dataloader.get_component2metrics(selected_load_shape, selected_multiplier, selected_composition)
 
     children = []
@@ -190,7 +190,7 @@ def click_estimate(est_click, selected_load_shape, selected_multiplier, selected
                 html.Div(className='component-ts', children=dcc.Graph(id='graph-%s' % component, figure=fig_line))
             ])
         )
-    return children, {'text-align': 'left', 'display': 'block'}, []
+    return children, {'text-align': 'left', 'display': 'block'}, {'text-align': 'left', 'display': 'inline'}, []
 
 
 @app.callback(
@@ -279,4 +279,4 @@ def set_composition(selected_composition, selected_multiplier, selected_load_sha
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(port=8050, host='0.0.0.0')
+    app.run_server(port=2021, host='0.0.0.0')

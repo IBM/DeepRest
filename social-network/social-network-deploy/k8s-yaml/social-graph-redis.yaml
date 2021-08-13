@@ -1,0 +1,78 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: social-graph-redis
+  labels:
+    death-star-project: social-network
+    app-name: social-graph-redis
+  namespace: social-network
+spec:
+  ports:
+  - port: 6379
+    name: redis
+  selector:
+    death-star-project: social-network
+    app-name: social-graph-redis
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: social-graph-redis-config
+  namespace: social-network
+data:
+  redis-config: |
+    maxmemory 1024mb
+    maxmemory-policy allkeys-lru  
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
+  name: social-graph-redis
+  labels:
+    death-star-project: social-network
+    app-name: social-graph-redis
+  namespace: social-network
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      death-star-project: social-network
+      app-name: social-graph-redis
+  template:
+    metadata:
+      annotations:
+        io.cilium.proxy-visibility: "<Egress/9090/TCP/HTTP>,<Egress/6379/TCP/REDIS>,<Egress/11211/TCP/MEMCACHED>,<Egress/27107/TCP/MONGODB>,<Egress/5672/TCP/RABBITMQ>,<Ingress/9090/TCP/HTTP>,<Ingress/6379/TCP/REDIS>,<Ingress/11211/TCP/MEMCACHED>,<Ingress/27017/TCP/MONGODB>,<Ingress/5672/TCP/RABBITMQ>"
+
+      labels: 
+        death-star-project: social-network
+        app-name: social-graph-redis
+        INPUT: social-graph-service
+      name: social-graph-redis
+    spec:
+      containers:
+      - name: social-graph-redis
+        image: redis:alpine
+        command:
+        - redis-server
+        - "/redis-master/redis.conf"
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+        - name: config
+          mountPath: /redis-master
+      restartPolicy: Always
+      volumes:
+      - name: redis-data
+        persistentVolumeClaim:
+          claimName: social-graph-redis-pvc
+      - name: config
+        configMap:
+          name: social-graph-redis-config
+          items:
+          - key: redis-config
+            path: redis.conf
+      # nodeName: 10.0.0.13
+      # schedulerName: poseidon

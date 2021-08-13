@@ -1,0 +1,4 @@
+numpy
+locust
+tqdm
+aiohttp
