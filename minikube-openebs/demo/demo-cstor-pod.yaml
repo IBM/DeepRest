@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hello-cstor-pod
+spec:
+  volumes:
+  - name: cstor-storage
+    persistentVolumeClaim:
+      claimName: cstor-pvc
+  containers:
+  - name: hello-container
+    image: busybox
+    command:
+       - sh
+       - -c
+       - 'while true; do echo "`date` [`hostname`] Hello from OpenEBS cStor PV." >> /mnt/store/greet.txt; sleep $((60)); done'
+    volumeMounts:
+    - mountPath: /mnt/store
+      name: cstor-storage

@@ -1,0 +1,10 @@
+[Unit]
+Description=minikube automount
+Requires=systemd-udev-settle.service
+Before=docker.service
+After=systemd-udev-settle.service
+
+[Service]
+ExecStart=/usr/sbin/minikube-automount
+Type=oneshot
+RemainAfterExit=true
