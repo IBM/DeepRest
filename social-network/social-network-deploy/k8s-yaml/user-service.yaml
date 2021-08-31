@@ -1,0 +1,56 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  labels:
+    death-star-project: social-network
+    app-name: user-service
+  namespace: social-network
+spec:
+  ports:
+  - port: 9090
+    name: tcp
+  selector:
+    death-star-project: social-network
+    app-name: user-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
+  name: user-service
+  labels:
+    death-star-project: social-network
+    app-name: user-service
+  namespace: social-network
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      death-star-project: social-network
+      app-name: user-service
+  template:
+    metadata:
+      annotations:
+        io.cilium.proxy-visibility: "<Egress/9090/TCP/HTTP>,<Egress/6379/TCP/REDIS>,<Egress/11211/TCP/MEMCACHED>,<Egress/27107/TCP/MONGODB>,<Egress/5672/TCP/RABBITMQ>,<Ingress/9090/TCP/HTTP>,<Ingress/6379/TCP/REDIS>,<Ingress/11211/TCP/MEMCACHED>,<Ingress/27017/TCP/MONGODB>,<Ingress/5672/TCP/RABBITMQ>"
+
+      labels: 
+        death-star-project: social-network
+        app-name: user-service
+        OUTPUT1: social-graph-service
+        OUTPUT2: user-mongodb
+        OUTPUT3: user-memcached
+        OUTPUT4: compose-post-service
+        INPUT1: social-graph-service
+        INPUT2: nginx-thrift
+      name: user-service
+    spec:
+      containers:
+      - name: user-service
+        image: khchow/social-network:cluster3
+        command: ["UserService"]
+      restartPolicy: Always
+      # nodeName: 10.0.0.13
+      # schedulerName: poseidon

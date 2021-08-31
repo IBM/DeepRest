@@ -1,0 +1,55 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: url-shorten-mongodb
+  labels:
+    death-star-project: social-network
+    app-name: url-shorten-mongodb
+  namespace: social-network
+spec:
+  ports:
+  - port: 27017
+    name: mongo
+  selector:
+    death-star-project: social-network
+    app-name: url-shorten-mongodb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
+  name: url-shorten-mongodb
+  labels:
+    death-star-project: social-network
+    app-name: url-shorten-mongodb
+  namespace: social-network
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      death-star-project: social-network
+      app-name: url-shorten-mongodb
+  template:
+    metadata:
+      annotations:
+        io.cilium.proxy-visibility: "<Egress/9090/TCP/HTTP>,<Egress/6379/TCP/REDIS>,<Egress/11211/TCP/MEMCACHED>,<Egress/27107/TCP/MONGODB>,<Egress/5672/TCP/RABBITMQ>,<Ingress/9090/TCP/HTTP>,<Ingress/6379/TCP/REDIS>,<Ingress/11211/TCP/MEMCACHED>,<Ingress/27017/TCP/MONGODB>,<Ingress/5672/TCP/RABBITMQ>"
+
+      labels: 
+        death-star-project: social-network
+        app-name: url-shorten-mongodb
+        INPUT: url-shorten-service
+      name: url-shorten-mongodb
+    spec:
+      containers:
+      - name: url-shorten-mongodb
+        image: poanpan/mongo:v1
+        args: ["--wiredTigerCacheSizeGB=1.0"]
+        volumeMounts:
+        - name: url-shorten-mongodb-persistent-storage
+          mountPath: /data/db
+      volumes:
+      - name: url-shorten-mongodb-persistent-storage
+        emptyDir: {}
+      restartPolicy: Always

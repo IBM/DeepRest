@@ -1,0 +1,18 @@
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: jaeger-elasticsearch
+spec:
+  strategy: production
+  storage:
+    type: elasticsearch
+    options:
+      es:
+        server-urls: http://elasticsearch.social-network.svc:9200
+  volumeMounts:
+  - name: elastic-data
+    mountPath: /usr/share/elasticsearch/data
+  volumes:
+  - name: elastic-data
+    persistentVolumeClaim:
+      claimName: elasticsearch-pvc

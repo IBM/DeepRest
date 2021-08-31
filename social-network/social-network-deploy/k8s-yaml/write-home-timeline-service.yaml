@@ -1,0 +1,59 @@
+#     depends_on:
+      # - write-home-timeline-rabbitmq
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: write-home-timeline-service
+  labels:
+    death-star-project: social-network
+    app-name: write-home-timeline-service
+  namespace: social-network
+spec:
+  ports:
+  - port: 9090
+    name: tcp
+  selector:
+    death-star-project: social-network
+    app-name: write-home-timeline-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
+  name: write-home-timeline-service
+  labels:
+    death-star-project: social-network
+    app-name: write-home-timeline-service
+  namespace: social-network
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      death-star-project: social-network
+      app-name: write-home-timeline-service
+  template:
+    metadata:
+      annotations:
+        io.cilium.proxy-visibility: "<Egress/9090/TCP/HTTP>,<Egress/6379/TCP/REDIS>,<Egress/11211/TCP/MEMCACHED>,<Egress/27107/TCP/MONGODB>,<Egress/5672/TCP/RABBITMQ>,<Ingress/9090/TCP/HTTP>,<Ingress/6379/TCP/REDIS>,<Ingress/11211/TCP/MEMCACHED>,<Ingress/27017/TCP/MONGODB>,<Ingress/5672/TCP/RABBITMQ>"
+
+      labels: 
+        death-star-project: social-network
+        app-name: write-home-timeline-service
+        OUTPUT1: social-graph-service
+        OUTPUT2: home-timeline-redis
+        INPUT: write-home-timeline-rabbitmq
+      name: write-home-timeline-service
+    spec:
+      containers:
+      - name: write-home-timeline-service
+        image: khchow/social-network:cluster3
+        command: ["WriteHomeTimelineService"]
+      initContainers:
+      - name: wait-write-home-timeline-rabbitmq
+        image: busybox:1.28
+        command: ['sh', '-c', "until nslookup write-home-timeline-rabbitmq.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+      restartPolicy: Always
+      # nodeName: 10.0.0.13
+      # schedulerName: poseidon

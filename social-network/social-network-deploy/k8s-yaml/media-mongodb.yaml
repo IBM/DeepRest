@@ -1,0 +1,55 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: media-mongodb
+  labels:
+    death-star-project: social-network
+    app-name: media-mongodb
+  namespace: social-network
+spec:
+  ports:
+  - port: 27017
+    name: mongo
+  selector:
+    death-star-project: social-network
+    app-name: media-mongodb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
+  name: media-mongodb
+  labels:
+    death-star-project: social-network
+    app-name: media-mongodb
+  namespace: social-network
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      death-star-project: social-network
+      app-name: media-mongodb
+  template:
+    metadata:
+      annotations:
+        io.cilium.proxy-visibility: "<Egress/9090/TCP/HTTP>,<Egress/6379/TCP/REDIS>,<Egress/11211/TCP/MEMCACHED>,<Egress/27107/TCP/MONGODB>,<Egress/5672/TCP/RABBITMQ>,<Ingress/9090/TCP/HTTP>,<Ingress/6379/TCP/REDIS>,<Ingress/11211/TCP/MEMCACHED>,<Ingress/27017/TCP/MONGODB>,<Ingress/5672/TCP/RABBITMQ>"
+
+      labels: 
+        death-star-project: social-network
+        app-name: media-mongodb
+      name: media-mongodb
+    spec:
+      containers:
+      - name: media-mongodb
+        image: poanpan/mongo:v1
+        args: ["--wiredTigerCacheSizeGB=1.0"]
+        volumeMounts:
+        - name: media-mongodb-persistent-storage
+          mountPath: /data/db
+      volumes:
+      - name: media-mongodb-persistent-storage
+        persistentVolumeClaim:
+          claimName: media-mongodb-pvc
+      restartPolicy: Always

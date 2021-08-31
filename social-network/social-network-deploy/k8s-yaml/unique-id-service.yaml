@@ -1,0 +1,52 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: unique-id-service
+  labels:
+    death-star-project: social-network
+    app-name: unique-id-service
+  namespace: social-network
+spec:
+  ports:
+  - port: 9090
+    name: tcp
+  selector:
+    death-star-project: social-network
+    app-name: unique-id-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
+  name: unique-id-service
+  labels:
+    death-star-project: social-network
+    app-name: unique-id-service
+  namespace: social-network
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      death-star-project: social-network
+      app-name: unique-id-service
+  template:
+    metadata:
+      annotations:
+        io.cilium.proxy-visibility: "<Egress/9090/TCP/HTTP>,<Egress/6379/TCP/REDIS>,<Egress/11211/TCP/MEMCACHED>,<Egress/27107/TCP/MONGODB>,<Egress/5672/TCP/RABBITMQ>,<Ingress/9090/TCP/HTTP>,<Ingress/6379/TCP/REDIS>,<Ingress/11211/TCP/MEMCACHED>,<Ingress/27017/TCP/MONGODB>,<Ingress/5672/TCP/RABBITMQ>"
+
+      labels: 
+        death-star-project: social-network
+        app-name: unique-id-service
+        OUTPUT: compose-post-service
+        INPUT: nginx-thrift
+      name: unique-id-service
+    spec:
+      containers:
+      - name: unique-id-service
+        image: khchow/social-network:cluster3
+        command: ["UniqueIdService"]
+      restartPolicy: Always
+      # nodeName: 10.0.0.13
+      # schedulerName: poseidon

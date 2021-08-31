@@ -1,0 +1,12 @@
+/usr/local/bin/./TextService
+/usr/local/bin/./UniqueIdService
+/usr/local/bin/./UserService
+/usr/local/bin/./SocialGraphService
+/usr/local/bin/./WriteHomeTimelineService
+/usr/local/bin/./PostStorageService
+/usr/local/bin/./UserTimelineService
+/usr/local/bin/./ComposePostService
+/usr/local/bin/./UserMentionService
+/usr/local/bin/./UrlShortenService
+/usr/local/bin/./MediaService
+/usr/local/bin/./HomeTimelineService
