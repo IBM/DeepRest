@@ -117,7 +117,7 @@ You can take a volume snapshot for persistent volume claim:
 apiVersion: snapshot.storage.k8s.io/v1
 kind: VolumeSnapshot
 metadata:
-  name: snapshot-demo
+  name: snapshot-web-demo
 spec:
   volumeSnapshotClassName: csi-hostpath-snapclass
   source:
@@ -133,7 +133,7 @@ You could get volume snapshot. You can confirm your volume snapshot by the follo
 ```shell
 kubectl get volumesnapshot
 NAME            READYTOUSE   SOURCEPVC   SOURCESNAPSHOTCONTENT   RESTORESIZE   SNAPSHOTCLASS            SNAPSHOTCONTENT                                    CREATIONTIME   AGE
-snapshot-demo   true         csi-pvc                             1Gi           csi-hostpath-snapclass   snapcontent-19730fcb-c34a-4f1a-abf2-6c5a9808076b   5s             5s
+snapshot-web-demo   true         csi-pvc                             1Gi           csi-hostpath-snapclass   snapcontent-19730fcb-c34a-4f1a-abf2-6c5a9808076b   5s             5s
 ```
 
 <h2 class="step"><span class="fa-stack fa-1x"><i class="fa fa-circle fa-stack-2x"></i><strong class="fa-stack-1x text-primary">6</strong></span>Restore from volume snapshot</h2>
@@ -149,7 +149,7 @@ metadata:
 spec:
   storageClassName: csi-hostpath-sc
   dataSource:
-    name: snapshot-demo
+    name: snapshot-web-demo
     kind: VolumeSnapshot
     apiGroup: snapshot.storage.k8s.io
   accessModes:

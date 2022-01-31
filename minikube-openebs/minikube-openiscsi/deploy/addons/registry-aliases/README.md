@@ -7,7 +7,7 @@ An addon to minikube that can help push and pull from the minikube registry usin
 ### Start minikube
 
 ```shell
-minikube start -p demo
+minikube start -p web-demo
 ```
 This addon depends on `registry` addon, it need to be enabled before the alias addon is installed:
 
@@ -27,11 +27,11 @@ watch kubectl get pods -n kube-system
 NAME                           READY   STATUS    RESTARTS   AGE
 coredns-6955765f44-kpbzt       1/1     Running   0          16m
 coredns-6955765f44-lzlsv       1/1     Running   0          16m
-etcd-demo                      1/1     Running   0          16m
-kube-apiserver-demo            1/1     Running   0          16m
-kube-controller-manager-demo   1/1     Running   0          16m
+etcd-web-demo                      1/1     Running   0          16m
+kube-apiserver-web-demo            1/1     Running   0          16m
+kube-controller-manager-web-demo   1/1     Running   0          16m
 kube-proxy-q8rb9               1/1     Running   0          16m
-kube-scheduler-demo            1/1     Running   0          16m
+kube-scheduler-web-demo            1/1     Running   0          16m
 *registry-4k8zs*              1/1     Running   0          40s
 registry-proxy-vs8jt           1/1     Running   0          40s
 storage-provisioner            1/1     Running   0          16m
@@ -66,7 +66,7 @@ watch minikube ssh -- cat /etc/hosts
 
 ```shell
 127.0.0.1       localhost
-127.0.1.1 demo
+127.0.1.1 web-demo
 10.97.247.75    example.org
 10.97.247.75    example.com
 10.97.247.75    test.com
@@ -129,7 +129,7 @@ You can verify the deployment end to end using the example [application](https:/
 
 ```shell
 git clone https://github.com/kameshsampath/minikube-registry-aliases-demo
-cd minikube-registry-aliases-demo
+cd minikube-registry-aliases-web-demo
 ```
 
 Make sure you set the docker context using `eval $(minikube -p demo docker-env)`

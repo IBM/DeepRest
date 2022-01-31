@@ -1,13 +1,10 @@
 # OpenEBS + cStor Storage Pool on minikube
-This repository describes the setup of minikube with OpenEBS cStor to be the storage engine. Using pool devices on the minikube VM, this setup allows you to create multiple PVCs for your application and enjoy the per-PVC monitoring features provided by OpenEBS.
+This repository describes the setup of minikube with OpenEBS cStor to be the storage engine. Using pool devices on the minikube VM, this setup allows you to create multiple PVCs for your application and enjoy the per-PVC monitoring features provided by OpenEBS, which can be fed to DeepRest for estimating storage-related resources. For more details, you can refer to our paper at EuroSys'22:
+* Ka-Ho Chow, Umesh Deshpande, Sangeetha Seshadri, and Ling Liu, "DeepRest: Deep Resource Estimation for Interactive Microservices," *ACM European Conference on Computer Systems (EuroSys)*, Rennes, France, Apr. 5-8, 2022.
 
 ## Enabling iSCSI on minikube
-Simply creating loop devices on the minikube VM does not work because OpenEBS requires iSCSI for provisioning. By default, iSCSI is not supported in the official minikube image. Hence, you need to follow one of the two options below to obtain a minikube iso with open-iscsi enabled. Please put the `minikube.iso` under this directory.
+Simply creating loop devices on the minikube VM does not work because OpenEBS requires iSCSI for provisioning. By default, iSCSI is not supported in the official minikube image. Hence, you need to obtain a minikube iso with open-iscsi enabled. Please put the `minikube.iso` under this directory.
 
-### Option 1: Download the iso from IBM Box
-You can download the `minikube.iso` here: [https://ibm.ent.box.com/s/c3d6j4ovenccsa4vnsehzypvpbhvbrl9](https://ibm.ent.box.com/s/c3d6j4ovenccsa4vnsehzypvpbhvbrl9)
-
-### Option 2: Build from the source
 To build `minikube.iso`, you can first enter the `minikube-openiscsi/` directory and then execute:
 ```bash
 sudo make buildroot-image

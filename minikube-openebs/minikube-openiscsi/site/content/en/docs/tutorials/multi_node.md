@@ -19,7 +19,7 @@ date: 2019-11-24
 - Start a cluster with 2 nodes in the driver of your choice:
 
 ```shell
-minikube start --nodes 2 -p multinode-demo
+minikube start --nodes 2 -p multinode-web-demo
 ```
 ```
 😄  [multinode-demo] minikube v1.18.1 on Opensuse-Tumbleweed 
@@ -59,7 +59,7 @@ multinode-demo-m02   Ready    <none>                 73s   v1.20.2
 - You can also check the status of your nodes:
 
 ```shell
-minikube status -p multinode-demo
+minikube status -p multinode-web-demo
 ```
 
 ```
@@ -114,7 +114,7 @@ hello-695c67cf9c-frcvw   1/1     Running   0          22s   10.244.0.3   multino
 - Look at our service, to know what URL to hit
 
 ```shell
-minikube service list -p multinode-demo
+minikube service list -p multinode-web-demo
 ```
 ```
 |-------------|------------|--------------|---------------------------|
